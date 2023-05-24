@@ -1,0 +1,12 @@
+Warm-up Observable, Subscription, Observer
+
+import { Observable } from 'rxjs';
+
+const someObservable$ = new Observable<string>(subscriber => {
+  subscriber.next('Alice');
+  setTimeout(() => subscriber.next('Ben'), 2000);
+  setTimeout(() => subscriber.next('Charlie'), 4000);
+  subscriber.complete();
+});
+
+const subscription = someObservable$.subscribe(value => console.log(value));

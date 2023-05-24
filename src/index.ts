@@ -1,10 +1,25 @@
-import { Observable } from 'rxjs';
+import { Observable, combineLatest, filter, forkJoin, from, fromEvent, of } from 'rxjs';
+import { ajax } from 'rxjs/ajax';
+import { EMPTY, timer, Subject } from 'rxjs';
+import { debounceTime, map, tap, catchError, concatMap } from 'rxjs/operators'
 
-const someObservable$ = new Observable<string>(subscriber => {
-  subscriber.next('Alice');
-  subscriber.next('Ben');
-  subscriber.next('Charlie');
-  subscriber.complete();
-});
+const emitButton = document.querySelector('button#emit');
+const inputElement: HTMLInputElement = document.querySelector('#value-input');
+const subscribeButton = document.querySelector('button#subscribe');
 
-someObservable$.subscribe(value => console.log(value));
+const value$ = new Subject<string>();
+
+// fromEvent(emitButton, 'click').subscribe(
+//     () => value$.next(inputElement.value)
+// )
+
+fromEvent(emitButton, 'click').pipe(
+    map(() => inputElement.value)
+).subscribe(value$)
+
+fromEvent(subscribeButton, 'click').subscribe(
+    () => {
+        console.log('New Subscription');
+        value$.subscribe(val => console.log(val))
+    }
+)
